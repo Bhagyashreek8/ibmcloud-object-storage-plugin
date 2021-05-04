@@ -19,7 +19,8 @@ import (
 )
 
 // PrivateServiceURL to make service requests to.
-const PrivateResourceConfigEP = "https://config.private.cloud-object-storage.cloud.ibm.com/v1"
+//const PrivateResourceConfigEP = "https://config.private.cloud-object-storage.cloud.ibm.com/v1"
+const DirectResourceConfigEP = "https://config.direct.cloud-object-storage.cloud.ibm.com/v1"
 const PrivateIAMEPForVPC = "https://private.iam.cloud.ibm.com"
 
 type AccessPolicyFactory interface {
@@ -67,7 +68,7 @@ func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName string, 
 
 	service, _ := rc.NewResourceConfigurationV1(&rc.ResourceConfigurationV1Options{
 		Authenticator: authenticator,
-		URL:           PrivateResourceConfigEP,
+		URL:           DirectResourceConfigEP,
 	})
 
 	updateConfigOptions := &rc.UpdateBucketConfigOptions{
