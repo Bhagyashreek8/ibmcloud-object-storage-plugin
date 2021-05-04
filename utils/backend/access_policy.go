@@ -19,7 +19,8 @@ import (
 )
 
 // PrivateServiceURL to make service requests to.
-const PrivateResourceConfigEP = "https://config.private.cloud-object-storage.cloud.ibm.com/v1"
+//const PrivateResourceConfigEP = "https://config.private.cloud-object-storage.cloud.ibm.com/v1"
+const ResourceConfigEP = "https://config.cloud-object-storage.cloud.ibm.com/v1"
 
 //const DirectResourceConfigEP = "https://config.direct.cloud-object-storage.cloud.ibm.com/v1"
 //const PrivateIAMEPForVPC = "https://private.iam.cloud.ibm.com"
@@ -56,7 +57,7 @@ var rcc ResourceConfigurationV1 = &UpdateAPObj{}
 
 // UpdateAccessPolicy updates the bucket access policy configuration with given ips
 func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName string, rcc ResourceConfigurationV1) error {
-
+	fmt.Println("")
 	allowedIPs := strings.Split(allowedIps, ",")
 	for i := range allowedIPs {
 		allowedIPs[i] = strings.TrimSpace(allowedIPs[i])
@@ -69,7 +70,7 @@ func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName string, 
 
 	service, _ := rc.NewResourceConfigurationV1(&rc.ResourceConfigurationV1Options{
 		Authenticator: authenticator,
-		URL:           PrivateResourceConfigEP,
+		URL:           ResourceConfigEP,
 	})
 
 	updateConfigOptions := &rc.UpdateBucketConfigOptions{
