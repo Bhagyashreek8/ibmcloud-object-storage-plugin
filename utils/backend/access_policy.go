@@ -57,7 +57,7 @@ var rcc ResourceConfigurationV1 = &UpdateAPObj{}
 
 // UpdateAccessPolicy updates the bucket access policy configuration with given ips
 func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName string, rcc ResourceConfigurationV1) error {
-	fmt.Println("")
+	fmt.Println("Resource config endpoint: ", ResourceConfigEP)
 	allowedIPs := strings.Split(allowedIps, ",")
 	for i := range allowedIPs {
 		allowedIPs[i] = strings.TrimSpace(allowedIPs[i])
