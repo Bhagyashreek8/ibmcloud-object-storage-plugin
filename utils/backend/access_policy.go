@@ -84,6 +84,8 @@ func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName string, 
 	response, err := rcc.UpdateBucketConfig(service, updateConfigOptions)
 	if response != nil {
 		fmt.Println("UpdateAccessPolicy Response ", strconv.Itoa(response.StatusCode))
+	} else {
+		fmt.Println("Error updating access policy for bucket", err)
 	}
 	return err
 }

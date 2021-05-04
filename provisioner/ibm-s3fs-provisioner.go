@@ -566,6 +566,7 @@ func (p *IBMS3fsProvisioner) Provision(options controller.ProvisionOptions) (*v1
 		}
 
 		if setBucketAccessPolicy {
+			contextLogger.Info(pvcName + ":" + clusterID + " : setting access policy for bucket ")
 			err := updateAP.UpdateAccessPolicy(vpcServiceEndpoints, resConfApiKey, pvc.Bucket, rcc)
 			if err != nil {
 				//revert bucket creation if updating bucket access policy fails
