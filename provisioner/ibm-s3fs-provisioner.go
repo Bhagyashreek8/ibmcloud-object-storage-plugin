@@ -64,6 +64,8 @@ type pvcAnnotations struct {
 	CosServiceNamespace     string `json:"ibm.io/cos-service-ns,omitempty"`
 	AutoCache               bool   `json:"ibm.io/auto_cache,string,omitempty"`
 	SetAccessPolicy         string `json:"ibm.io/set-access-policy,omitempty"`
+	ConfigEP                string `json:"ibm.io/config-ep,omitempty"`
+	IAMEP                   string `json:"ibm.io/iam-ep,omitempty"`
 }
 
 // Storage Class options
@@ -567,7 +569,7 @@ func (p *IBMS3fsProvisioner) Provision(options controller.ProvisionOptions) (*v1
 
 		if setBucketAccessPolicy {
 			contextLogger.Info(pvcName + ":" + clusterID + " : setting access policy for bucket ")
-			err := updateAP.UpdateAccessPolicy(vpcServiceEndpoints, resConfApiKey, pvc.Bucket, rcc)
+			err := updateAP.UpdateAccessPolicy(vpcServiceEndpoints, resConfApiKey, pvc.Bucket, pvc.ConfigEP, pvc.IAMEP, rcc)
 			if err != nil {
 				//revert bucket creation if updating bucket access policy fails
 				if deleteBucket {
@@ -587,7 +589,7 @@ func (p *IBMS3fsProvisioner) Provision(options controller.ProvisionOptions) (*v1
 		// this enables to set access policy for existing bucket
 		// when AutoCreateBucket is false, AutoDeleteBucket is false and SetAccessPolicy is true
 		if setBucketAccessPolicy {
-			err := updateAP.UpdateAccessPolicy(vpcServiceEndpoints, resConfApiKey, pvc.Bucket, rcc)
+			err := updateAP.UpdateAccessPolicy(vpcServiceEndpoints, resConfApiKey, pvc.Bucket, pvc.ConfigEP, pvc.IAMEP, rcc)
 			if err != nil {
 				return nil, fmt.Errorf(pvcName+" : "+clusterID+" :failed to set access policy for bucket %s : %v", pvc.Bucket, err)
 			}

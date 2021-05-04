@@ -22,15 +22,15 @@ import (
 //const PrivateResourceConfigEP = "https://config.private.cloud-object-storage.cloud.ibm.com/v1"
 //const ResourceConfigEP = "https://config.cloud-object-storage.cloud.ibm.com/v1"
 
-const DirectResourceConfigEP = "https://config.direct.cloud-object-storage.cloud.ibm.com/v1"
-const PrivateIAMEPForVPC = "https://private.iam.cloud.ibm.com"
+//const DirectResourceConfigEP = "https://config.direct.cloud-object-storage.cloud.ibm.com/v1"
+//const PrivateIAMEPForVPC = "https://private.iam.cloud.ibm.com"
 
 type AccessPolicyFactory interface {
 	NewAccessPolicy() AccessPolicy
 }
 
 type AccessPolicy interface {
-	UpdateAccessPolicy(allowedIps, apiKey, bucketName string, rcc ResourceConfigurationV1) error
+	UpdateAccessPolicy(allowedIps, apiKey, bucketName, configEP, iamEP string, rcc ResourceConfigurationV1) error
 }
 
 type UpdateAPFactory struct{}
@@ -56,9 +56,9 @@ func (c *UpdateAPFactory) NewAccessPolicy() AccessPolicy {
 var rcc ResourceConfigurationV1 = &UpdateAPObj{}
 
 // UpdateAccessPolicy updates the bucket access policy configuration with given ips
-func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName string, rcc ResourceConfigurationV1) error {
-	fmt.Println("Resource config endpoint: ", DirectResourceConfigEP)
-	fmt.Println("IAM endpoint: ", PrivateIAMEPForVPC)
+func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName, configEP, iamEP string, rcc ResourceConfigurationV1) error {
+	fmt.Println("Resource config endpoint: ", configEP)
+	fmt.Println("IAM endpoint: ", iamEP)
 	allowedIPs := strings.Split(allowedIps, ",")
 	for i := range allowedIPs {
 		allowedIPs[i] = strings.TrimSpace(allowedIPs[i])
@@ -66,13 +66,30 @@ func (c *UpdateAPObj) UpdateAccessPolicy(allowedIps, apiKey, bucketName string, 
 
 	authenticator := &core.IamAuthenticator{
 		ApiKey: apiKey,
-		URL:    PrivateIAMEPForVPC,
+		//URL:    PrivateIAMEPForVPC,
+	}
+
+	if iamEP != "" {
+		authenticator = &core.IamAuthenticator{
+			ApiKey: apiKey,
+			URL:    iamEP,
+		}
 	}
 
 	service, _ := rc.NewResourceConfigurationV1(&rc.ResourceConfigurationV1Options{
 		Authenticator: authenticator,
-		URL:           DirectResourceConfigEP,
+		//URL:           DirectResourceConfigEP,
 	})
+
+	if configEP != "" {
+		service, _ = rc.NewResourceConfigurationV1(&rc.ResourceConfigurationV1Options{
+			Authenticator: authenticator,
+			URL:           configEP,
+		})
+	}
+
+	fmt.Println("service object: ", service)
+	fmt.Println("authenticator object: ", authenticator)
 
 	updateConfigOptions := &rc.UpdateBucketConfigOptions{
 		Bucket: core.StringPtr(bucketName),

@@ -77,7 +77,7 @@ var rc1 fakeRCV1 = &fakeResourceConfigurationV1{}
 
 func Test_UpdateAccessPolicy_Positive(t *testing.T) {
 	rcSess := getFakeAccessPolicySession(&fakeResourceConfigurationV1{frc1: rc1})
-	err := rcSess.UpdateAccessPolicy(allowedIps, resConfApiKey, testBucket, rc1)
+	err := rcSess.UpdateAccessPolicy(allowedIps, resConfApiKey, testBucket, "", "", rc1)
 	assert.NoError(t, err)
 }
 
@@ -85,7 +85,7 @@ var rc2 fakeRCV2 = &fakeResourceConfigurationV1Fail{}
 
 func Test_UpdateAccessPolicy_Error(t *testing.T) {
 	rcSess := getFakeAccessPolicySession(&fakeResourceConfigurationV1Fail{frc2: rc2})
-	err := rcSess.UpdateAccessPolicy(allowedIps, resConfApiKey, testBucket2, rc2)
+	err := rcSess.UpdateAccessPolicy(allowedIps, resConfApiKey, testBucket2, "", "", rc2)
 	if assert.Error(t, err) {
 		assert.Contains(t, err.Error(), errTestMsg)
 	}
